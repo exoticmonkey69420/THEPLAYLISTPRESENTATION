@@ -1,1 +1,282 @@
 
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Transformation Under Pressure</title>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&amp;family=Inter:wght@300;400;500;600&amp;family=Roboto+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #0D0D0D;
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+        }
+
+        .slide-container {
+            width: 1280px;
+            height: 720px;
+            background-color: #0D0D0D;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            color: #FFFFFF;
+        }
+
+        /* Tech decorative lines (replacing gradients) */
+        .tech-line {
+            position: absolute;
+            background-color: #333;
+            opacity: 0.3;
+            z-index: 0;
+        }
+        .line-h-1 { top: 20%; left: 0; width: 100%; height: 1px; }
+        .line-h-2 { top: 80%; left: 0; width: 100%; height: 1px; }
+        .line-v-1 { top: 0; left: 15%; width: 1px; height: 100%; }
+        .line-v-2 { top: 0; right: 15%; width: 1px; height: 100%; }
+
+        /* Code Decorations */
+        .code-deco {
+            position: absolute;
+            font-family: 'Roboto Mono', monospace;
+            color: rgba(29, 185, 84, 0.15);
+            font-size: 14px;
+            z-index: 1;
+            pointer-events: none;
+        }
+        
+        .code-top-right { top: 120px; right: 60px; text-align: right; }
+        .code-bottom-left { bottom: 40px; left: 60px; }
+
+        /* Header Styling */
+        .header {
+            position: relative;
+            z-index: 10;
+            padding: 40px 60px 20px 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 42px;
+            color: #FFFFFF;
+            letter-spacing: -0.5px;
+        }
+
+        .header-accent {
+            width: 80px;
+            height: 6px;
+            background-color: #1DB954;
+            margin-top: 10px;
+            border-radius: 3px;
+        }
+
+        .slide-number {
+            font-family: 'Roboto Mono', monospace;
+            color: #535353;
+            font-size: 18px;
+            border: 1px solid #333;
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+
+        /* Main Grid Content */
+        .content-wrapper {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px 80px 40px 80px;
+            z-index: 10;
+            position: relative;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 30px;
+            width: 100%;
+            height: 100%;
+            max-width: 1100px;
+        }
+
+        /* Card Styling */
+        .challenge-card {
+            background-color: #181818;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 30px;
+            display: flex;
+            align-items: flex-start;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .challenge-card:hover {
+            border-color: #1DB954;
+            background-color: #202020;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+        }
+
+        /* Icon styling */
+        .icon-wrapper {
+            width: 70px;
+            height: 70px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 25px;
+            flex-shrink: 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .challenge-card:hover .icon-wrapper {
+            background-color: rgba(29, 185, 84, 0.1);
+            border-color: rgba(29, 185, 84, 0.3);
+        }
+
+        .card-icon {
+            font-size: 32px;
+            color: #B3B3B3;
+            transition: color 0.3s ease;
+        }
+
+        .challenge-card:hover .card-icon {
+            color: #1DB954;
+        }
+
+        /* Text Content */
+        .text-content {
+            flex: 1;
+        }
+
+        .card-title {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 24px;
+            color: #FFFFFF;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .card-desc {
+            font-family: 'Inter', sans-serif;
+            font-weight: 300;
+            font-size: 16px;
+            color: #A0A0A0;
+            line-height: 1.5;
+        }
+
+        /* Specific accent colors/borders for variety if needed, keeping uniform green for now as per prompt */
+        
+        /* Decorative numeric indicators */
+        .card-number {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 40px;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.03);
+            pointer-events: none;
+        }
+
+        .challenge-card:hover .card-number {
+            color: rgba(29, 185, 84, 0.1);
+        }
+
+    </style>
+</head>
+<body>
+<div class="slide-container">
+<!-- Background Lines -->
+<div class="tech-line line-h-1"></div>
+<div class="tech-line line-h-2"></div>
+<div class="tech-line line-v-1"></div>
+<div class="tech-line line-v-2"></div>
+<!-- Decorative Code -->
+<div class="code-deco code-top-right">
+<p>while (growth &gt; revenue) {</p>
+<p>  optimize(cost_structure);</p>
+<p>}</p>
+</div>
+<div class="code-deco code-bottom-left">
+<p>// Error: Bias detected in cluster 4</p>
+<p>function calibrate_fairness(model) { ... }</p>
+</div>
+<!-- Header -->
+<div class="header">
+<div>
+<h1 class="header-title">Transformation Under Pressure</h1>
+<div class="header-accent"></div>
+</div>
+<div class="slide-number">06</div>
+</div>
+<!-- Main Content -->
+<div class="content-wrapper">
+<div class="grid-container">
+<!-- Card 1: Scalability -->
+<div class="challenge-card">
+<div class="card-number">01</div>
+<div class="icon-wrapper">
+<i class="fas fa-cogs card-icon"></i>
+</div>
+<div class="text-content">
+<p class="card-title">Scalability</p>
+<p class="card-desc">Managing petabytes of data and low-latency streaming for over 500 million active monthly users globally.</p>
+</div>
+</div>
+<!-- Card 2: Profitability -->
+<div class="challenge-card">
+<div class="card-number">02</div>
+<div class="icon-wrapper">
+<i class="fas fa-chart-line card-icon"></i>
+</div>
+<div class="text-content">
+<p class="card-title">Profitability</p>
+<p class="card-desc">Balancing massive royalty payouts to rights holders with the need for sustainable operating margins.</p>
+</div>
+</div>
+<!-- Card 3: Licensing -->
+<div class="challenge-card">
+<div class="card-number">03</div>
+<div class="icon-wrapper">
+<i class="fas fa-balance-scale card-icon"></i>
+</div>
+<div class="text-content">
+<p class="card-title">Licensing</p>
+<p class="card-desc">Navigating complex, region-specific music rights and intense negotiations with major record labels.</p>
+</div>
+</div>
+<!-- Card 4: Fairness -->
+<div class="challenge-card">
+<div class="card-number">04</div>
+<div class="icon-wrapper">
+<i class="fas fa-users-cog card-icon"></i>
+</div>
+<div class="text-content">
+<p class="card-title">Fairness</p>
+<p class="card-desc">Ensuring algorithms don't create echo chambers or systematically bias recommendations against independent artists.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>
