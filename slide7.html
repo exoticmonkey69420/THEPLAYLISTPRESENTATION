@@ -1,1 +1,330 @@
+<!DOCTYPE html>
 
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Who Wins? Who Loses?</title>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&amp;family=Inter:wght@300;400;500;600&amp;family=Roboto+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #0D0D0D;
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+        }
+
+        .slide-container {
+            width: 1280px;
+            height: 720px;
+            background-color: #0D0D0D;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            color: #FFFFFF;
+        }
+
+        /* Background Pattern (Dot Grid via SVG to avoid gradients) */
+        .bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23FFFFFF' fill-opacity='0.03' fill-rule='evenodd'%3E%3Ccircle cx='2' cy='2' r='1'/%3E%3C/g%3E%3C/svg%3E");
+            z-index: 0;
+        }
+
+        /* Header Styling */
+        .header {
+            position: relative;
+            z-index: 20;
+            padding: 40px 60px 20px 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 42px;
+            color: #FFFFFF;
+            letter-spacing: -0.5px;
+        }
+
+        .header-accent {
+            width: 80px;
+            height: 6px;
+            background-color: #1DB954;
+            margin-top: 10px;
+            border-radius: 3px;
+        }
+
+        .slide-number {
+            font-family: 'Roboto Mono', monospace;
+            color: #535353;
+            font-size: 18px;
+            border: 1px solid #333;
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+
+        /* Main Content Layout */
+        .content-wrapper {
+            display: flex;
+            flex: 1;
+            position: relative;
+            z-index: 10;
+            padding: 20px 60px 60px 60px;
+            gap: 40px;
+        }
+
+        /* Columns */
+        .column {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border-radius: 16px;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #333;
+            transition: transform 0.3s ease;
+        }
+
+        /* Left Column (Users) */
+        .col-users {
+            background-color: #121212;
+            border-top: 4px solid #1DB954;
+        }
+
+        /* Right Column (Artists) */
+        .col-artists {
+            background-color: #161616;
+            border-top: 4px solid #FF4D4D; /* Red accent for "Loss" contrast */
+        }
+
+        .column:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        /* Column Header */
+        .col-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .col-icon-box {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            font-size: 28px;
+        }
+
+        .icon-box-users {
+            background-color: rgba(29, 185, 84, 0.1);
+            color: #1DB954;
+        }
+
+        .icon-box-artists {
+            background-color: rgba(255, 77, 77, 0.1);
+            color: #FF4D4D;
+        }
+
+        .col-title {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 32px;
+            color: #FFFFFF;
+        }
+
+        .col-subtitle {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 14px;
+            color: #888;
+            margin-top: 4px;
+        }
+
+        /* List Items */
+        .benefit-list {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .benefit-item {
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .check-icon {
+            margin-right: 20px;
+            margin-top: 5px;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .icon-check {
+            color: #1DB954;
+        }
+
+        .icon-cross {
+            color: #FF4D4D;
+        }
+
+        .benefit-text-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .benefit-title {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 24px;
+            color: #FFFFFF;
+            margin-bottom: 8px;
+        }
+
+        .benefit-desc {
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            color: #A0A0A0;
+            line-height: 1.5;
+        }
+
+        /* VS Badge */
+        .vs-badge {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background-color: #0D0D0D;
+            border: 2px solid #333;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 30;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            font-style: italic;
+            color: #FFFFFF;
+            font-size: 20px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        /* Decorative Code */
+        .code-deco {
+            position: absolute;
+            font-family: 'Roboto Mono', monospace;
+            color: rgba(255, 255, 255, 0.05);
+            font-size: 14px;
+            z-index: 1;
+            pointer-events: none;
+        }
+        
+        .code-top-right { top: 40px; right: 60px; text-align: right; }
+        .code-bottom-center { bottom: 20px; left: 50%; transform: translateX(-50%); text-align: center; }
+
+    </style>
+</head>
+<body>
+<div class="slide-container">
+<!-- Background Pattern -->
+<div class="bg-pattern"></div>
+<!-- Decorative Code -->
+<div class="code-deco code-top-right">
+<p>function assess_impact(stakeholder) {</p>
+<p>  return stakeholder.value &gt; cost ? "WIN" : "LOSE";</p>
+<p>}</p>
+</div>
+<div class="code-deco code-bottom-center">
+<p>// Ethical Analysis v2.1: Disparity Detected</p>
+</div>
+<!-- Header -->
+<div class="header">
+<div>
+<h1 class="header-title">Who Wins? Who Loses?</h1>
+<div class="header-accent"></div>
+</div>
+<div class="slide-number">07</div>
+</div>
+<!-- Main Content -->
+<div class="content-wrapper">
+<!-- VS Badge (Centered) -->
+<div class="vs-badge">VS</div>
+<!-- Left Column: Users -->
+<div class="column col-users">
+<div class="col-header">
+<div class="col-icon-box icon-box-users">
+<i class="fas fa-headphones-alt"></i>
+</div>
+<div>
+<p class="col-title">The Users</p>
+<p class="col-subtitle">Consumption &amp; Experience</p>
+</div>
+</div>
+<div class="benefit-list">
+<div class="benefit-item">
+<i class="fas fa-check-circle check-icon icon-check"></i>
+<div class="benefit-text-group">
+<p class="benefit-title">Convenience</p>
+<p class="benefit-desc">Seamless listening experience across devices with zero friction.</p>
+</div>
+</div>
+<div class="benefit-item">
+<i class="fas fa-infinity check-icon icon-check"></i>
+<div class="benefit-text-group">
+<p class="benefit-title">Infinite Access</p>
+<p class="benefit-desc">Over 100 million tracks available instantly for the price of one album.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Artists -->
+<div class="column col-artists">
+<div class="col-header">
+<div class="col-icon-box icon-box-artists">
+<i class="fas fa-microphone-lines"></i>
+</div>
+<div>
+<p class="col-title">The Artists</p>
+<p class="col-subtitle">Creation &amp; Livelihood</p>
+</div>
+</div>
+<div class="benefit-list">
+<div class="benefit-item">
+<i class="fas fa-times-circle check-icon icon-cross"></i>
+<div class="benefit-text-group">
+<p class="benefit-title">Lower Royalties</p>
+<p class="benefit-desc">Fractional cents per stream ($0.003 - $0.005) replaces album sales revenue.</p>
+</div>
+</div>
+<div class="benefit-item">
+<i class="fas fa-robot check-icon icon-cross"></i>
+<div class="benefit-text-group">
+<p class="benefit-title">Algorithm Dependency</p>
+<p class="benefit-desc">Survival depends on optimizing content for machine sorting rather than human connection.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>
