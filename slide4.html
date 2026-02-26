@@ -1,1 +1,297 @@
+<!DOCTYPE html>
 
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Who Holds the Power?</title>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&amp;family=Inter:wght@300;400;500;600&amp;family=Roboto+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #0D0D0D;
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+        }
+
+        .slide-container {
+            width: 1280px;
+            height: 720px;
+            background-color: #0D0D0D;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            color: #FFFFFF;
+        }
+
+        /* Background Pattern */
+        .bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(circle at 50% 50%, #1a1a1a 1px, transparent 1px);
+            background-size: 30px 30px;
+            opacity: 0.2;
+            z-index: 0;
+        }
+
+        /* Decorative Code Elements */
+        .code-deco {
+            position: absolute;
+            font-family: 'Roboto Mono', monospace;
+            color: rgba(29, 185, 84, 0.15);
+            font-size: 14px;
+            z-index: 1;
+            pointer-events: none;
+        }
+        
+        .code-top-right { top: 40px; right: 60px; text-align: right; }
+        .code-bottom-left { bottom: 40px; left: 60px; }
+
+        /* Header Styling */
+        .header {
+            position: relative;
+            z-index: 10;
+            padding: 40px 60px 10px 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 42px;
+            color: #FFFFFF;
+            letter-spacing: -0.5px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .header-accent {
+            width: 80px;
+            height: 6px;
+            background-color: #1DB954;
+            margin-top: 10px;
+            border-radius: 3px;
+        }
+
+        .slide-number {
+            font-family: 'Roboto Mono', monospace;
+            color: #535353;
+            font-size: 18px;
+            border: 1px solid #333;
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+
+        /* Main Grid Layout */
+        .content-wrapper {
+            flex: 1;
+            padding: 30px 100px 50px 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            position: relative;
+        }
+
+        .stakeholder-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 30px;
+            width: 100%;
+            height: 100%;
+            max-width: 1000px;
+        }
+
+        /* Card Styling */
+        .card {
+            background-color: #181818;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 30px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .card:hover {
+            border-color: #1DB954;
+            background-color: #202020;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.4), 0 0 15px rgba(29, 185, 84, 0.1);
+        }
+
+        .card-icon-container {
+            width: 100px;
+            height: 100px;
+            background-color: #0D0D0D;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 30px;
+            border: 2px solid #333;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .card:hover .card-icon-container {
+            border-color: #1DB954;
+            background-color: rgba(29, 185, 84, 0.1);
+        }
+
+        .card-icon {
+            font-size: 40px;
+            color: #B3B3B3;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover .card-icon {
+            color: #1DB954;
+            transform: scale(1.1);
+        }
+
+        .card-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .card-title {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 28px;
+            color: #FFFFFF;
+            margin-bottom: 8px;
+            line-height: 1.2;
+        }
+
+        .card-subtitle {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 16px;
+            color: #1DB954;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .card-desc {
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            color: #888;
+            line-height: 1.4;
+        }
+
+        /* Corner accents for cards */
+        .corner-accent {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-top: 2px solid #1DB954;
+            border-right: 2px solid #1DB954;
+            top: 10px;
+            right: 10px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .card:hover .corner-accent {
+            opacity: 1;
+        }
+
+    </style>
+</head>
+<body>
+<div class="slide-container">
+<!-- Background Elements -->
+<div class="bg-pattern"></div>
+<!-- Decorative Code -->
+<div class="code-deco code-top-right">
+<p>const stakeholders = [</p>
+<p>  "Ek", "Eng", "VC", "Artist"</p>
+<p>];</p>
+<p>function balancePower() {</p>
+<p>  return "Algorithm";</p>
+<p>}</p>
+</div>
+<!-- Header -->
+<div class="header">
+<div>
+<h1 class="header-title">Who Holds the Power?</h1>
+<div class="header-accent"></div>
+</div>
+<div class="slide-number">04</div>
+</div>
+<!-- Main Content Grid -->
+<div class="content-wrapper">
+<div class="stakeholder-grid">
+<!-- CEO Card -->
+<div class="card">
+<div class="corner-accent"></div>
+<div class="card-icon-container">
+<i class="fas fa-user-tie card-icon"></i>
+</div>
+<div class="card-content">
+<div class="card-title">CEO</div>
+<div class="card-subtitle">Daniel Ek</div>
+<div class="card-desc"><p>Vision &amp; Strategy</p></div>
+</div>
+</div>
+<!-- Engineers Card -->
+<div class="card">
+<div class="corner-accent"></div>
+<div class="card-icon-container">
+<i class="fas fa-laptop-code card-icon"></i>
+</div>
+<div class="card-content">
+<div class="card-title">Engineers</div>
+<div class="card-subtitle">The Architects</div>
+<div class="card-desc"><p>Building the Black Box</p></div>
+</div>
+</div>
+<!-- Investors Card -->
+<div class="card">
+<div class="corner-accent"></div>
+<div class="card-icon-container">
+<i class="fas fa-chart-line card-icon"></i>
+</div>
+<div class="card-content">
+<div class="card-title">Investors</div>
+<div class="card-subtitle">Growth Pressure</div>
+<div class="card-desc"><p>Demanding Scale &amp; Profit</p></div>
+</div>
+</div>
+<!-- Artists Card -->
+<div class="card">
+<div class="corner-accent"></div>
+<div class="card-icon-container">
+<i class="fas fa-music card-icon"></i>
+</div>
+<div class="card-content">
+<div class="card-title">Artists</div>
+<div class="card-subtitle">Content Providers</div>
+<div class="card-desc"><p>Fuel for the Machine</p></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Code Decoration -->
+<div class="code-deco code-bottom-left">
+<p>// Power dynamics analysis</p>
+<p>if (scale &gt; art) { prioritize(algorithm); }</p>
+</div>
+</div>
+</body>
+</html>
