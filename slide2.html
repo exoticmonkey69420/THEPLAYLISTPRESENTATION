@@ -1,1 +1,343 @@
+<!DOCTYPE html>
 
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>From Music App to Data Machine</title>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&amp;family=Inter:wght@300;400;500&amp;family=Roboto+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #0D0D0D;
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+        }
+
+        .slide-container {
+            width: 1280px;
+            height: 720px;
+            background-color: #0D0D0D;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            color: #FFFFFF;
+        }
+
+        /* Subtle Grid Background */
+        .bg-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 0;
+        }
+
+        /* Header Styling */
+        .header {
+            position: relative;
+            z-index: 10;
+            padding: 40px 60px 20px 60px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 42px;
+            color: #FFFFFF;
+            letter-spacing: -0.5px;
+        }
+
+        .header-accent {
+            width: 80px;
+            height: 6px;
+            background-color: #1DB954;
+            margin-top: 10px;
+            border-radius: 3px;
+        }
+
+        .slide-number {
+            font-family: 'Roboto Mono', monospace;
+            color: #535353;
+            font-size: 18px;
+        }
+
+        /* Main Content Layout */
+        .content-wrapper {
+            display: flex;
+            flex: 1;
+            padding: 40px 60px;
+            z-index: 10;
+            position: relative;
+        }
+
+        .left-col {
+            width: 45%;
+            padding-right: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .right-col {
+            width: 55%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* Bullet Points Styling */
+        .bullet-list {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        .bullet-item {
+            display: flex;
+            align-items: center;
+            font-family: 'Poppins', sans-serif;
+            font-size: 32px;
+            font-weight: 600;
+            color: #E0E0E0;
+            opacity: 0;
+            animation: fadeInRight 0.8s ease-out forwards;
+        }
+
+        .bullet-item:nth-child(1) { animation-delay: 0.2s; }
+        .bullet-item:nth-child(2) { animation-delay: 0.4s; }
+        .bullet-item:nth-child(3) { animation-delay: 0.6s; }
+        .bullet-item:nth-child(4) { animation-delay: 0.8s; }
+
+        .bullet-marker {
+            color: #1DB954;
+            margin-right: 20px;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 24px;
+            background: rgba(29, 185, 84, 0.1);
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid rgba(29, 185, 84, 0.3);
+        }
+
+        @keyframes fadeInRight {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* Diagram Styling */
+        .cycle-container {
+            width: 500px;
+            height: 500px;
+            position: relative;
+        }
+
+        .cycle-svg {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            animation: rotate-slow 60s linear infinite;
+        }
+
+        @keyframes rotate-slow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .node {
+            position: absolute;
+            width: 110px;
+            height: 110px;
+            background-color: #121212;
+            border: 2px solid #333;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            transition: all 0.3s ease;
+        }
+
+        .node i {
+            font-size: 32px;
+            color: #B3B3B3;
+            margin-bottom: 8px;
+        }
+
+        .node span {
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: #FFFFFF;
+            text-transform: uppercase;
+        }
+
+        .node.highlight {
+            border-color: #1DB954;
+            box-shadow: 0 0 20px rgba(29, 185, 84, 0.2);
+        }
+
+        .node.highlight i {
+            color: #1DB954;
+        }
+
+        /* Positioning Nodes around a circle */
+        /* Center is 250, 250. Radius approx 180px */
+        .node-top { top: 20px; left: 195px; } /* User */
+        .node-right { top: 195px; left: 370px; } /* Data */
+        .node-bottom { top: 370px; left: 195px; } /* Algorithm */
+        .node-left { top: 195px; left: 20px; } /* Playlist */
+
+        /* Central Label */
+        .center-label {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            font-family: 'Roboto Mono', monospace;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 12px;
+            background: #0D0D0D;
+            padding: 10px;
+            border-radius: 50%;
+            z-index: 5;
+        }
+
+        /* Decorative Code */
+        .code-deco {
+            position: absolute;
+            font-family: 'Roboto Mono', monospace;
+            color: #333;
+            font-size: 14px;
+            z-index: 1;
+            user-select: none;
+        }
+        .code-bottom-left { bottom: 20px; left: 60px; }
+        .code-top-right { top: 110px; right: 60px; text-align: right; }
+
+    </style>
+</head>
+<body>
+<div class="slide-container">
+<!-- Background Grid -->
+<div class="bg-grid"></div>
+<!-- Decorative Code -->
+<div class="code-deco code-bottom-left">
+<p>while(user.isActive) {</p>
+<p>  collect(data);</p>
+<p>  optimize(experience);</p>
+<p>}</p>
+</div>
+<div class="code-deco code-top-right">
+<p>// System Architecture v4.0</p>
+<p>import tensorflow as tf</p>
+</div>
+<!-- Header -->
+<div class="header">
+<div>
+<h1 class="header-title">From Music App to Data Machine</h1>
+<div class="header-accent"></div>
+</div>
+<div class="slide-number">02</div>
+</div>
+<!-- Content -->
+<div class="content-wrapper">
+<!-- Left Column: Bullet Points -->
+<div class="left-col">
+<div class="bullet-list">
+<div class="bullet-item">
+<span class="bullet-marker">01</span>
+<p>Growth crisis</p>
+</div>
+<div class="bullet-item">
+<span class="bullet-marker">02</span>
+<p>Investor pressure</p>
+</div>
+<div class="bullet-item">
+<span class="bullet-marker">03</span>
+<p>Engineering solution</p>
+</div>
+<div class="bullet-item">
+<span class="bullet-marker">04</span>
+<p>Algorithmic personalization</p>
+</div>
+</div>
+</div>
+<!-- Right Column: Diagram -->
+<div class="right-col">
+<div class="cycle-container">
+<!-- Rotating Dashed Circle -->
+<svg class="cycle-svg" viewbox="0 0 500 500">
+<defs>
+<lineargradient id="circleGradient" x1="0%" x2="100%" y1="0%" y2="0%">
+<stop offset="0%" style="stop-color:#333;stop-opacity:1"></stop>
+<stop offset="50%" style="stop-color:#1DB954;stop-opacity:1"></stop>
+<stop offset="100%" style="stop-color:#333;stop-opacity:1"></stop>
+</lineargradient>
+<marker id="arrowhead" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5">
+<polygon fill="#1DB954" points="0 0, 10 3.5, 0 7"></polygon>
+</marker>
+</defs>
+<!-- Main Path Circle -->
+<circle cx="250" cy="250" fill="none" r="180" stroke="#333" stroke-dasharray="10,10" stroke-width="2"></circle>
+<!-- Animated Flow Path -->
+<circle cx="250" cy="250" fill="none" r="180" stroke="url(#circleGradient)" stroke-dasharray="280 850" stroke-linecap="round" stroke-width="4">
+<animatetransform attributename="transform" dur="4s" from="0 250 250" repeatcount="indefinite" to="360 250 250" type="rotate"></animatetransform>
+</circle>
+</svg>
+<!-- Nodes -->
+<!-- Top: User -->
+<div class="node node-top highlight">
+<i class="fas fa-user-headset"></i>
+<span>User</span>
+</div>
+<!-- Right: Data -->
+<div class="node node-right">
+<i class="fas fa-database"></i>
+<span>Data</span>
+</div>
+<!-- Bottom: Algorithm -->
+<div class="node node-bottom highlight">
+<i class="fas fa-microchip"></i>
+<span>Algorithm</span>
+</div>
+<!-- Left: Playlist -->
+<div class="node node-left">
+<i class="fas fa-list-music"></i>
+<span>Playlist</span>
+</div>
+<!-- Central Connection Text -->
+<div class="center-label">
+<i class="fas fa-sync-alt" style="color: #1DB954; margin-bottom: 5px; font-size: 20px;"></i>
+<p>Feedback Loop</p>
+</div>
+<!-- Labels for arrows (positioned absolutely) -->
+<div style="position: absolute; top: 130px; right: 100px; color: #1DB954; font-size: 14px; font-weight: 600; font-family: 'Inter'; transform: rotate(45deg);">Input</div>
+<div style="position: absolute; bottom: 130px; right: 100px; color: #666; font-size: 14px; font-weight: 600; font-family: 'Inter'; transform: rotate(-45deg);">Process</div>
+<div style="position: absolute; bottom: 130px; left: 100px; color: #1DB954; font-size: 14px; font-weight: 600; font-family: 'Inter'; transform: rotate(45deg);">Output</div>
+<div style="position: absolute; top: 130px; left: 90px; color: #1DB954; font-size: 14px; font-weight: 600; font-family: 'Inter'; transform: rotate(-45deg);">More Data</div>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>
