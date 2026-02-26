@@ -1,1 +1,387 @@
+<!DOCTYPE html>
 
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Code = Control</title>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&amp;family=Inter:wght@300;400;500;600&amp;family=Roboto+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #0D0D0D;
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+        }
+
+        .slide-container {
+            width: 1280px;
+            height: 720px;
+            background-color: #0D0D0D;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            color: #FFFFFF;
+        }
+
+        /* Subtle Matrix/Grid Background */
+        .bg-matrix {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(0deg, transparent 24%, rgba(29, 185, 84, .03) 25%, rgba(29, 185, 84, .03) 26%, transparent 27%, transparent 74%, rgba(29, 185, 84, .03) 75%, rgba(29, 185, 84, .03) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(29, 185, 84, .03) 25%, rgba(29, 185, 84, .03) 26%, transparent 27%, transparent 74%, rgba(29, 185, 84, .03) 75%, rgba(29, 185, 84, .03) 76%, transparent 77%, transparent);
+            background-size: 50px 50px;
+            z-index: 0;
+        }
+
+        /* Header Styling */
+        .header {
+            position: relative;
+            z-index: 10;
+            padding: 40px 60px 10px 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 42px;
+            color: #FFFFFF;
+            letter-spacing: -0.5px;
+        }
+
+        .header-accent {
+            width: 80px;
+            height: 6px;
+            background-color: #1DB954;
+            margin-top: 10px;
+            border-radius: 3px;
+        }
+
+        .slide-number {
+            font-family: 'Roboto Mono', monospace;
+            color: #535353;
+            font-size: 18px;
+            border: 1px solid #333;
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+
+        /* Main Content Area */
+        .content-wrapper {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            position: relative;
+            padding: 20px 60px;
+        }
+
+        .diagram-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 1100px;
+        }
+
+        /* Columns */
+        .column {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .col-inputs {
+            align-items: flex-end;
+            gap: 25px;
+            width: 25%;
+        }
+
+        .col-center {
+            align-items: center;
+            width: 40%;
+            position: relative;
+        }
+
+        .col-outputs {
+            align-items: flex-start;
+            gap: 30px;
+            width: 25%;
+        }
+
+        /* Input/Output Items */
+        .io-item {
+            display: flex;
+            align-items: center;
+            background-color: #181818;
+            border: 1px solid #333;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            color: #E0E0E0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            white-space: nowrap;
+        }
+
+        .io-item:hover {
+            border-color: #1DB954;
+            transform: translateX(5px);
+            background-color: #202020;
+        }
+
+        .col-inputs .io-item:hover {
+            transform: translateX(-5px);
+        }
+
+        .io-icon {
+            color: #1DB954;
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Arrows for flow */
+        .flow-arrow-in {
+            position: absolute;
+            right: -40px;
+            color: #333;
+            font-size: 18px;
+        }
+        
+        .flow-arrow-out {
+            position: absolute;
+            left: -40px;
+            color: #333;
+            font-size: 18px;
+        }
+
+        /* The Black Box */
+        .black-box-container {
+            width: 320px;
+            height: 320px;
+            background-color: #000000;
+            border: 2px solid #1DB954;
+            border-radius: 16px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 30px rgba(29, 185, 84, 0.15);
+            z-index: 20;
+        }
+
+        .box-label {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 32px;
+            color: #FFFFFF;
+            letter-spacing: 1px;
+            z-index: 10;
+            text-transform: uppercase;
+        }
+
+        .box-sublabel {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 14px;
+            color: #1DB954;
+            margin-top: 10px;
+            background: rgba(29, 185, 84, 0.1);
+            padding: 4px 12px;
+            border-radius: 4px;
+            z-index: 10;
+        }
+
+        /* Inner Box Decoration (Matrix Rain simplified) */
+        .box-inner-deco {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            border: 1px dashed rgba(29, 185, 84, 0.3);
+            border-radius: 10px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .code-rain {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 10px;
+            color: rgba(29, 185, 84, 0.2);
+            line-height: 1.2;
+            text-align: center;
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+            opacity: 0.5;
+            mask-image: linear-gradient(to bottom, transparent, black 20%, black 80%, transparent);
+            -webkit-mask-image: linear-gradient(to bottom, transparent, black 20%, black 80%, transparent);
+        }
+
+        /* Connecting Lines (SVG) */
+        .connections-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Labels for Columns */
+        .column-header {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 14px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* Code Decorations */
+        .code-deco {
+            position: absolute;
+            font-family: 'Roboto Mono', monospace;
+            color: #222;
+            font-size: 14px;
+            z-index: 1;
+        }
+        .code-top-left { top: 120px; left: 60px; }
+        .code-bottom-right { bottom: 40px; right: 60px; text-align: right; color: rgba(29, 185, 84, 0.2); }
+
+    </style>
+</head>
+<body>
+<div class="slide-container">
+<!-- Background -->
+<div class="bg-matrix"></div>
+<!-- Decorative Code -->
+<div class="code-deco code-top-left" style="color: rgba(255,255,255,0.1);">
+<p>const input_stream = stream.connect();</p>
+<p>let user_profile = new Profile(id);</p>
+</div>
+<div class="code-deco code-bottom-right">
+<p>if (prediction.score &gt; 0.9) {</p>
+<p>  recommend(track);</p>
+<p>} else {</p>
+<p>  discard();</p>
+<p>}</p>
+</div>
+<!-- Header -->
+<div class="header">
+<div>
+<h1 class="header-title">Code = Control</h1>
+<div class="header-accent"></div>
+</div>
+<div class="slide-number">05</div>
+</div>
+<!-- Main Content -->
+<div class="content-wrapper">
+<div class="diagram-container">
+<!-- SVG Connections Layer -->
+<!-- This visualizes the flow behind the items -->
+<svg class="connections-svg">
+<defs>
+<marker id="arrowhead" markerheight="7" markerwidth="10" orient="auto" refx="9" refy="3.5">
+<polygon fill="#333" points="0 0, 10 3.5, 0 7"></polygon>
+</marker>
+</defs>
+<!-- Lines will be drawn conceptually by layout, using CSS arrows for simplicity -->
+</svg>
+<!-- Left Column: Inputs -->
+<div class="column col-inputs">
+<div class="column-header">Inputs</div>
+<div class="io-item">
+<i class="fas fa-history io-icon"></i>
+<p>Listening History</p>
+<i class="fas fa-caret-right flow-arrow-in"></i>
+</div>
+<div class="io-item">
+<i class="fas fa-forward io-icon"></i>
+<p>Skips &amp; Likes</p>
+<i class="fas fa-caret-right flow-arrow-in"></i>
+</div>
+<div class="io-item">
+<i class="fas fa-clock io-icon"></i>
+<p>Time of Day</p>
+<i class="fas fa-caret-right flow-arrow-in"></i>
+</div>
+<div class="io-item">
+<i class="fas fa-mobile-alt io-icon"></i>
+<p>Device Type</p>
+<i class="fas fa-caret-right flow-arrow-in"></i>
+</div>
+</div>
+<!-- Center Column: The Black Box -->
+<div class="column col-center">
+<!-- Large arrow indicators pointing to box -->
+<div style="position: absolute; left: -20px; color: #1DB954; font-size: 24px; animation: pulse 2s infinite;">
+<i class="fas fa-chevron-right"></i>
+</div>
+<div class="black-box-container">
+<div class="box-inner-deco">
+<div class="code-rain">
+                            01010101001010101110101
+                            10101010101010101010101
+                            00110100101010011010101
+                            10100101010101010010101
+                            01010100110010101010101
+                            10101010101010101010101
+                            01010101001010101110101
+                            10101010101010101010101
+                            00110100101010011010101
+                            10100101010101010010101
+                            01010100110010101010101
+                            10101010101010101010101
+                        </div>
+</div>
+<div class="box-label">Algorithm</div>
+<div class="box-sublabel">&lt; Black Box /&gt;</div>
+</div>
+<!-- Large arrow indicators pointing from box -->
+<div style="position: absolute; right: -20px; color: #1DB954; font-size: 24px; animation: pulse 2s infinite;">
+<i class="fas fa-chevron-right"></i>
+</div>
+</div>
+<!-- Right Column: Outputs -->
+<div class="column col-outputs">
+<div class="column-header">Outputs</div>
+<div class="io-item">
+<i class="fas fa-caret-right flow-arrow-out"></i>
+<i class="fas fa-calendar-check io-icon"></i>
+<p>Discover Weekly</p>
+</div>
+<div class="io-item">
+<i class="fas fa-caret-right flow-arrow-out"></i>
+<i class="fas fa-thumbs-up io-icon"></i>
+<p>Recommendations</p>
+</div>
+<div class="io-item">
+<i class="fas fa-caret-right flow-arrow-out"></i>
+<i class="fas fa-chart-bar io-icon"></i>
+<p>Global Charts</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>
