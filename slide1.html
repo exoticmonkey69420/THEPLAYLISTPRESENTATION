@@ -1,1 +1,308 @@
+<!DOCTYPE html>
 
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The Playlist – Episode 4: The Coder</title>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&amp;family=Inter:wght@300;400;500&amp;family=Roboto+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+        }
+
+        .slide-container {
+            width: 1280px;
+            height: 720px;
+            background-color: #0D0D0D;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #FFFFFF;
+        }
+
+        /* Matrix Background Effect */
+        #matrixCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.15;
+        }
+
+        /* Content Wrapper */
+        .content-wrapper {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            padding: 60px;
+        }
+
+        /* Logo Section */
+        .spotify-logo-large {
+            font-size: 100px;
+            color: #1DB954;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 20px rgba(29, 185, 84, 0.4));
+            animation: pulse-glow 3s infinite ease-in-out;
+        }
+
+        @keyframes pulse-glow {
+            0% { filter: drop-shadow(0 0 15px rgba(29, 185, 84, 0.3)); transform: scale(1); }
+            50% { filter: drop-shadow(0 0 30px rgba(29, 185, 84, 0.6)); transform: scale(1.02); }
+            100% { filter: drop-shadow(0 0 15px rgba(29, 185, 84, 0.3)); transform: scale(1); }
+        }
+
+        /* Typography */
+        .main-title {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            font-size: 64px;
+            line-height: 1.1;
+            text-align: center;
+            margin-bottom: 16px;
+            letter-spacing: -1px;
+            background: linear-gradient(180deg, #FFFFFF 0%, #E0E0E0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .episode-tag {
+            font-family: 'Roboto Mono', monospace;
+            color: #1DB954;
+            font-size: 18px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            border: 1px solid #1DB954;
+            padding: 8px 16px;
+            border-radius: 4px;
+            background: rgba(29, 185, 84, 0.1);
+        }
+
+        .subtitle {
+            font-family: 'Inter', sans-serif;
+            font-weight: 300;
+            font-size: 28px;
+            color: #B3B3B3;
+            text-align: center;
+            max-width: 800px;
+            margin-bottom: 80px;
+        }
+
+        /* Flow Diagram Section */
+        .flow-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            margin-top: auto;
+            margin-bottom: 20px;
+        }
+
+        .flow-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        .icon-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #181818;
+            border: 2px solid #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .flow-step.active .icon-circle {
+            border-color: #1DB954;
+            background: rgba(29, 185, 84, 0.1);
+            box-shadow: 0 0 15px rgba(29, 185, 84, 0.2);
+        }
+
+        .icon-circle i {
+            font-size: 32px;
+            color: #B3B3B3;
+        }
+
+        .flow-step.active .icon-circle i {
+            color: #1DB954;
+        }
+
+        .step-label {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 16px;
+            color: #B3B3B3;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .flow-arrow {
+            margin: 0 30px;
+            color: #333;
+            font-size: 24px;
+            position: relative;
+            top: -20px; /* Align with circles */
+        }
+        
+        .flow-arrow i {
+             animation: slide-right 2s infinite;
+        }
+        
+        @keyframes slide-right {
+            0% { transform: translateX(-5px); opacity: 0.5; color: #333; }
+            50% { opacity: 1; color: #555; }
+            100% { transform: translateX(5px); opacity: 0.5; color: #333; }
+        }
+
+        /* Decorative Elements */
+        .code-snippet {
+            font-family: 'Roboto Mono', monospace;
+            position: absolute;
+            color: rgba(29, 185, 84, 0.2);
+            font-size: 14px;
+        }
+        
+        .top-left-code { top: 30px; left: 40px; }
+        .bottom-right-code { bottom: 30px; right: 40px; text-align: right; }
+
+    </style>
+</head>
+<body>
+<div class="slide-container">
+<!-- Canvas for Matrix Effect -->
+<canvas id="matrixCanvas"></canvas>
+<div class="content-wrapper">
+<!-- Code Decorations -->
+<div class="code-snippet top-left-code">
+<p>&lt;source_project_type&gt;super_agent&lt;/source_project_type&gt;</p>
+<p>import spotify.algorithm as sa</p>
+<p>class Gatekeeper(BaseModel):</p>
+</div>
+<div class="code-snippet bottom-right-code">
+<p>def predict_taste(user_id):</p>
+<p>  return data.analyze(history)</p>
+<p>// Episode 4 initialized</p>
+</div>
+<!-- Main Content -->
+<div style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; margin-top: -40px;">
+<div class="spotify-logo-large">
+<i class="fab fa-spotify"></i>
+</div>
+<div class="episode-tag">
+<p>Episode 4</p>
+</div>
+<h1 class="main-title">
+<p>The Playlist: The Coder</p>
+</h1>
+<h2 class="subtitle">
+<p>How Algorithms Became the Real Gatekeepers</p>
+</h2>
+</div>
+<!-- Flow Chart Bottom -->
+<div class="flow-container">
+<!-- Step 1 -->
+<div class="flow-step">
+<div class="icon-circle">
+<i class="fas fa-music"></i>
+</div>
+<p class="step-label">Music</p>
+</div>
+<div class="flow-arrow">
+<i class="fas fa-chevron-right"></i>
+</div>
+<!-- Step 2 -->
+<div class="flow-step">
+<div class="icon-circle">
+<i class="fas fa-database"></i>
+</div>
+<p class="step-label">Data</p>
+</div>
+<div class="flow-arrow">
+<i class="fas fa-chevron-right"></i>
+</div>
+<!-- Step 3 (Highlighted) -->
+<div class="flow-step active">
+<div class="icon-circle">
+<i class="fas fa-microchip"></i>
+</div>
+<p class="step-label" style="color: #1DB954;">Algorithm</p>
+</div>
+<div class="flow-arrow">
+<i class="fas fa-chevron-right"></i>
+</div>
+<!-- Step 4 -->
+<div class="flow-step">
+<div class="icon-circle">
+<i class="fas fa-headphones-alt"></i>
+</div>
+<p class="step-label">User</p>
+</div>
+</div>
+</div>
+</div>
+<script>
+        // Matrix Rain Effect
+        const canvas = document.getElementById('matrixCanvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = 1280;
+        canvas.height = 720;
+
+        const characters = '01ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const fontSize = 14;
+        const columns = canvas.width / fontSize;
+        const drops = [];
+
+        for (let i = 0; i < columns; i++) {
+            drops[i] = Math.random() * canvas.height; // Start at random heights
+        }
+
+        function draw() {
+            ctx.fillStyle = 'rgba(13, 13, 13, 0.05)'; // Fade effect
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#1DB954'; // Spotify Green text
+            ctx.font = fontSize + 'px Roboto Mono';
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = characters.charAt(Math.floor(Math.random() * characters.length));
+                // Only draw some characters to keep it clean, not too dense
+                if (Math.random() > 0.95) {
+                    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                }
+
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+
+        setInterval(draw, 50);
+    </script>
+</body>
+</html>
