@@ -1,1 +1,421 @@
+<!DOCTYPE html>
 
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Traditional vs. Spotify Model</title>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&amp;family=Inter:wght@300;400;500;600&amp;family=Roboto+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #0D0D0D;
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+        }
+
+        .slide-container {
+            width: 1280px;
+            height: 720px;
+            background-color: #0D0D0D;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            color: #FFFFFF;
+        }
+
+        /* Background Pattern - Dot Grid */
+        .bg-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23FFFFFF' fill-opacity='0.03' fill-rule='evenodd'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40'/%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.1;
+            z-index: 0;
+        }
+
+        /* Decorative Elements */
+        .corner-bracket {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border-color: #1DB954;
+            border-style: solid;
+            opacity: 0.5;
+            z-index: 1;
+        }
+        .top-left { top: 30px; left: 30px; border-width: 2px 0 0 2px; }
+        .bottom-right { bottom: 30px; right: 30px; border-width: 0 2px 2px 0; }
+
+        /* Header Styling */
+        .header {
+            position: relative;
+            z-index: 20;
+            padding: 40px 60px 20px 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 42px;
+            color: #FFFFFF;
+            letter-spacing: -0.5px;
+        }
+
+        .header-accent {
+            width: 80px;
+            height: 6px;
+            background-color: #1DB954;
+            margin-top: 10px;
+            border-radius: 3px;
+        }
+
+        .slide-number {
+            font-family: 'Roboto Mono', monospace;
+            color: #535353;
+            font-size: 18px;
+            border: 1px solid #333;
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+
+        /* Main Content */
+        .content-wrapper {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px 80px 40px 80px;
+            z-index: 10;
+        }
+
+        /* Table Container */
+        .comparison-table {
+            width: 100%;
+            max-width: 1100px;
+            border-collapse: separate;
+            border-spacing: 0;
+            border: 1px solid #333;
+            border-radius: 12px;
+            overflow: hidden;
+            background-color: #121212;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        /* Header Row */
+        .table-header {
+            background-color: #1DB954;
+            color: #000;
+        }
+
+        .th-cell {
+            padding: 20px;
+            text-align: center;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 24px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            width: 50%;
+        }
+
+        .th-icon {
+            margin-right: 10px;
+            font-size: 20px;
+        }
+
+        /* Data Rows */
+        .table-row {
+            transition: background-color 0.2s ease;
+        }
+
+        .table-row:nth-child(even) {
+            background-color: #181818;
+        }
+        
+        .table-row:nth-child(odd) {
+            background-color: #121212;
+        }
+
+        .table-row:hover {
+            background-color: #222;
+        }
+
+        .td-cell {
+            padding: 25px 30px;
+            border-bottom: 1px solid #2A2A2A;
+            vertical-align: middle;
+            position: relative;
+        }
+
+        .table-row:last-child .td-cell {
+            border-bottom: none;
+        }
+
+        /* Cell Content Styling */
+        .cell-content {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .cell-icon-box {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        /* Traditional Side Styling */
+        .cell-left .cell-icon-box {
+            background-color: #2A2A2A;
+            color: #888;
+            border: 1px solid #444;
+        }
+
+        .cell-left .cell-text {
+            color: #CCC;
+        }
+
+        .cell-left {
+            border-right: 1px solid #333;
+        }
+
+        /* Spotify Side Styling */
+        .cell-right .cell-icon-box {
+            background-color: rgba(29, 185, 84, 0.1);
+            color: #1DB954;
+            border: 1px solid rgba(29, 185, 84, 0.3);
+        }
+
+        .cell-right .cell-text {
+            color: #FFF;
+            font-weight: 600;
+        }
+
+        /* Typography */
+        .cell-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 20px;
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        .cell-sub {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+            text-transform: uppercase;
+        }
+
+        .cell-right .cell-sub {
+            color: #1DB954;
+            opacity: 0.7;
+        }
+
+        /* Comparison Indicator */
+        .vs-indicator {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #0D0D0D;
+            border: 1px solid #333;
+            color: #555;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 10px;
+            padding: 4px 8px;
+            border-radius: 10px;
+            z-index: 5;
+        }
+
+        /* Code Decoration */
+        .code-deco {
+            position: absolute;
+            font-family: 'Roboto Mono', monospace;
+            color: rgba(29, 185, 84, 0.15);
+            font-size: 14px;
+            z-index: 2;
+            pointer-events: none;
+        }
+        
+        .code-bottom-right { 
+            bottom: 40px; 
+            right: 60px; 
+            text-align: right;
+        }
+
+        /* Highlight Logic Animation */
+        .highlight-pulse {
+            animation: pulse-green 3s infinite;
+        }
+
+        @keyframes pulse-green {
+            0% { box-shadow: 0 0 0 0 rgba(29, 185, 84, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(29, 185, 84, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(29, 185, 84, 0); }
+        }
+
+    </style>
+</head>
+<body>
+<div class="slide-container">
+<!-- Background & Decor -->
+<div class="bg-grid"></div>
+<div class="corner-bracket top-left"></div>
+<div class="corner-bracket bottom-right"></div>
+<!-- Code Decoration -->
+<div class="code-deco code-bottom-right">
+<p>class IndustryModel {</p>
+<p>  constructor(type) {</p>
+<p>    this.type = type;</p>
+<p>    this.optimized = true;</p>
+<p>  }</p>
+<p>}</p>
+</div>
+<!-- Header -->
+<div class="header">
+<div>
+<h1 class="header-title">Traditional vs. Spotify Model</h1>
+<div class="header-accent"></div>
+</div>
+<div class="slide-number">08</div>
+</div>
+<!-- Main Content -->
+<div class="content-wrapper">
+<table class="comparison-table">
+<thead>
+<tr class="table-header">
+<th class="th-cell">
+<i class="fas fa-history th-icon"></i> Traditional
+                        </th>
+<th class="th-cell">
+<i class="fab fa-spotify th-icon"></i> Spotify
+                        </th>
+</tr>
+</thead>
+<tbody>
+<!-- Row 1: Revenue Model -->
+<tr class="table-row">
+<td class="td-cell cell-left">
+<div class="cell-content">
+<div class="cell-icon-box">
+<i class="fas fa-compact-disc"></i>
+</div>
+<div>
+<p class="cell-title cell-text">Album Sales</p>
+<p class="cell-sub">Transactional Unit</p>
+</div>
+</div>
+<div class="vs-indicator">VS</div>
+</td>
+<td class="td-cell cell-right">
+<div class="cell-content">
+<div class="cell-icon-box highlight-pulse">
+<i class="fas fa-sync-alt"></i>
+</div>
+<div>
+<p class="cell-title cell-text">Subscription</p>
+<p class="cell-sub">Recurring Revenue</p>
+</div>
+</div>
+</td>
+</tr>
+<!-- Row 2: Gatekeepers -->
+<tr class="table-row">
+<td class="td-cell cell-left">
+<div class="cell-content">
+<div class="cell-icon-box">
+<i class="fas fa-user-tie"></i>
+</div>
+<div>
+<p class="cell-title cell-text">Gatekeepers = Labels</p>
+<p class="cell-sub">Human Selection</p>
+</div>
+</div>
+<div class="vs-indicator">VS</div>
+</td>
+<td class="td-cell cell-right">
+<div class="cell-content">
+<div class="cell-icon-box">
+<i class="fas fa-code-branch"></i>
+</div>
+<div>
+<p class="cell-title cell-text">Gatekeeper = Algorithm</p>
+<p class="cell-sub">Data Selection</p>
+</div>
+</div>
+</td>
+</tr>
+<!-- Row 3: Usage Model -->
+<tr class="table-row">
+<td class="td-cell cell-left">
+<div class="cell-content">
+<div class="cell-icon-box">
+<i class="fas fa-box-open"></i>
+</div>
+<div>
+<p class="cell-title cell-text">Ownership</p>
+<p class="cell-sub">Physical / Digital File</p>
+</div>
+</div>
+<div class="vs-indicator">VS</div>
+</td>
+<td class="td-cell cell-right">
+<div class="cell-content">
+<div class="cell-icon-box">
+<i class="fas fa-cloud"></i>
+</div>
+<div>
+<p class="cell-title cell-text">Access</p>
+<p class="cell-sub">Streaming Library</p>
+</div>
+</div>
+</td>
+</tr>
+<!-- Row 4: Discovery -->
+<tr class="table-row">
+<td class="td-cell cell-left">
+<div class="cell-content">
+<div class="cell-icon-box">
+<i class="fas fa-broadcast-tower"></i>
+</div>
+<div>
+<p class="cell-title cell-text">Hits via Radio</p>
+<p class="cell-sub">Mass Media Push</p>
+</div>
+</div>
+<div class="vs-indicator">VS</div>
+</td>
+<td class="td-cell cell-right">
+<div class="cell-content">
+<div class="cell-icon-box">
+<i class="fas fa-chart-network"></i>
+</div>
+<div>
+<p class="cell-title cell-text">Hits via Data</p>
+<p class="cell-sub">Behavioral Pull</p>
+</div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</body>
+</html>
